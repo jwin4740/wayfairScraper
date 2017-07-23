@@ -1,0 +1,31 @@
+{
+  "name": "wayfairscraper",
+  "version": "1.0.0",
+  "description": "test scraper for arthur",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwin4740/wayfairScraper.git"
+  },
+  "keywords": [
+    "scraper",
+    "sheets",
+    "bed"
+  ],
+  "author": "James J Winkle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwin4740/wayfairScraper/issues"
+  },
+  "homepage": "https://github.com/jwin4740/wayfairScraper#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.15.3",
+    "mongojs": "^2.4.0",
+    "request": "^2.81.0"
+  }
+}
