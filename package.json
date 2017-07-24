@@ -24,6 +24,7 @@
   "homepage": "https://github.com/jwin4740/wayfairScraper#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "cloudscraper": "^1.4.1",
     "express": "^4.15.3",
     "mongojs": "^2.4.0",
     "request": "^2.81.0"

@@ -21,7 +21,8 @@ console.log("\n******************************************\n" +
 request("http://www.awwwards.com/websites/clean/", function(error, response, html) {
 
   // Load the HTML into cheerio
-  var $ = cheerio.load(html);
+ 
+    var $ = cheerio.load(html);
 
   // Make an empty array for saving our scraped info
   var result = [];
