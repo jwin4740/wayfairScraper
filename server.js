@@ -11,7 +11,7 @@ var cheerio = require("cheerio");
 var app = express();
 
 var resultLength = 0;
-
+var resultsArray = [];
 var itemsPerPage = 96;
 var currPage = 0;
 
@@ -33,10 +33,16 @@ function makeRequest() {
     }
     if (!error && response.statusCode == 200) {
       var $ = cheerio.load(body);
-      var test = $(".product_blocks_wrapper").find("a.SbProductBlock").attr("href");
-      resultLength += test.length;
-      console.log(resultLength);
-      setTimeout(makeRequest, 500);
+
+      // var test = $(".product_blocks_wrapper").find("a.SbProductBlock").attr("href");
+      // console.log(test);
+      // resultLength += test.length;
+
+      $("a.SbProductBlock").each(function (i, elem) {
+        resultsArray[i] = $(this).attr("href");
+      });
+      console.log(resultsArray);
+      // setTimeout(makeRequest, 500);
     }
 
   }
