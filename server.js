@@ -10,6 +10,17 @@ var cheerio = require("cheerio");
 // Initialize Express
 var app = express();
 
+var databaseUrl = "wayfair";
+var collections = ["wLinks"];
+
+// Hook mongojs config to db variable
+var db = mongojs(databaseUrl, collections);
+
+// Log any mongojs errors to console
+db.on("error", function (error) {
+  console.log("Database Error:", error);
+});
+
 var resultLength = 0;
 var resultsArray = [];
 var itemsPerPage = 96;
@@ -34,15 +45,18 @@ function makeRequest() {
     if (!error && response.statusCode == 200) {
       var $ = cheerio.load(body);
 
-      // var test = $(".product_blocks_wrapper").find("a.SbProductBlock").attr("href");
-      // console.log(test);
-      // resultLength += test.length;
-
       $("a.SbProductBlock").each(function (i, elem) {
-        resultsArray[i] = $(this).attr("href");
+        var tempLink = $(this).attr("href");
+        resultsArray.push(tempLink)
       });
-      console.log(resultsArray);
-      // setTimeout(makeRequest, 500);
+     
+      console.log(resultsArray.length);
+      if (currPage < 31) {
+      setTimeout(makeRequest, 500);
+      } else {
+        console.log("done requesting");
+        insertToMongo();
+      }
     }
 
   }
@@ -51,7 +65,16 @@ function makeRequest() {
 
 }
 
+function insertToMongo() {
+  var n = resultsArray.length;
+  for (var i = 0; i < n; i++) {
+    db.wLinks.insert({
+      "link": resultsArray[i]
+    });
 
+  }
+  console.log("done inserting into mongo");
+}
 
 
 // Listen on port 3000

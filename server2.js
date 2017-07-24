@@ -1,5 +1,3 @@
-/* Scraper: Server #3  (18.2.1)
- * ========================= */
 
 // Dependencies:
 
@@ -7,6 +5,17 @@
 var request = require("request");
 // Scrapes our HTML
 var cheerio = require("cheerio");
+
+var databaseUrl = "week18day2";
+var collections = ["notes"];
+
+// Hook mongojs config to db variable
+var db = mongojs(databaseUrl, collections);
+
+// Log any mongojs errors to console
+db.on("error", function(error) {
+  console.log("Database Error:", error);
+});
 
 
 // First, tell the console what server3.js is doing
