@@ -13,55 +13,51 @@ var cheerio = require("cheerio");
 var app = express();
 
 // Database configuration
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
+var databaseUrl = "wayfair";
+var collections = ["wSuppliers"];
+var results = [];
 
 // Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
+var db = mongojs(databaseUrl);
 db.on("error", function(error) {
   console.log("Database Error:", error);
 });
 
 
-// Main route (simple Hello World Message)
-app.get("/", function(req, res) {
-  res.send("Hello world");
-});
 
-// Retrieve data from the db
-app.get("/all", function(req, res) {
-  // Find all results from the scrapedData collection in the db
-  db.scrapedData.find({}, function(error, found) {
-    // Throw any errors to the console
-    if (error) {
-      console.log(error);
-    }
-    // If there are no errors, send the data to the browser as a json
-    else {
-      res.json(found);
-    }
-  });
-});
+// // Retrieve data from the db
+// app.get("/all", function(req, res) {
+//   // Find all results from the scrapedData collection in the db
+//   db.scrapedData.find({}, function(error, found) {
+//     // Throw any errors to the console
+//     if (error) {
+//       console.log(error);
+//     }
+//     // If there are no errors, send the data to the browser as a json
+//     else {
+//       res.json(found);
+//     }
+//   });
+// });
 
 // Scrape data from one site and place it into the mongodb db
-app.get("/scrape", function(req, res) {
-  // Make a request for the news section of ycombinator
-  request("https://news.ycombinator.com/", function(error, response, html) {
+
+  request("https://www.wayfair.com/bed-bath/sb0/sheets-c431080.html/", function(error, response, html) {
     // Load the html body from request into cheerio
     var $ = cheerio.load(html);
+    console.log(html);
     // For each element with a "title" class
-    $(".title").each(function(i, element) {
+    $("#att_1224_109").each(function(i, element) {
       // Save the text of each link enclosed in the current element
-      var title = $(this).children("a").text();
+      var name = $(this).children("a").text();
       // Save the href value of each link enclosed in the current element
-      var link = $(this).children("a").attr("href");
-
+      console.log(name);
       // If this title element had both a title and a link
-      if (title && link) {
+      if (name) {
         // Save the data in the scrapedData db
-        db.scrapedData.save({
-          title: title,
-          link: link
+        db.wSuppliers.insert({
+          name: name
+         
         },
         function(error, saved) {
           // If there's an error during this query
@@ -79,9 +75,8 @@ app.get("/scrape", function(req, res) {
     });
   });
 
-  // This will send a "Scrape Complete" message to the browser
-  res.send("Scrape Complete");
-});
+
+
 
 
 // Listen on port 3000
