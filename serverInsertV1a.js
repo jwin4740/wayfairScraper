@@ -25,6 +25,9 @@ var resultLength = 0;
 var resultsArray = [];
 var itemsPerPage = 96;
 var currPage = 0;
+var x = 0;
+
+// constructor object for resultsArray
 
 makeRequest();
 
@@ -38,6 +41,7 @@ function makeRequest() {
     };
 
     function callback(error, response, body) {
+   
         currPage++;
         if (error) {
             return;
@@ -46,12 +50,17 @@ function makeRequest() {
             var $ = cheerio.load(body);
 
             $("a.SbProductBlock").each(function (i, elem) {
+                x++
                 var tempLink = $(this).attr("href");
-                resultsArray.push(tempLink)
+                resultsArray.push({
+                    "link": tempLink,
+                    "count" : x
+                   
+                });
             });
 
             console.log(resultsArray.length);
-            if (currPage < 31) {
+            if (currPage < 3) {
                 setTimeout(makeRequest, 500);
             } else {
                 console.log("done requesting");
@@ -66,13 +75,11 @@ function makeRequest() {
 }
 
 function insertToMongo() {
-    var n = resultsArray.length;
-    for (var i = 0; i < n; i++) {
-        db.wLinks.insert({
-            "link": resultsArray[i]
-        });
 
-    }
+
+    db.wLinks.insert(resultsArray);
+
+
     console.log("done inserting into mongo");
 }
 
