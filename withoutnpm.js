@@ -3,18 +3,35 @@
 
 // Dependencies
 var express = require("express");
-var mongojs = require("mongojs");
+
 // Require request and cheerio. This makes the scraping possible
 var request = require("request");
 var cheerio = require("cheerio");
+var mongo = require("mongodb");
 // Initialize Express
 var app = express();
 
-var databaseUrl = "wayfair";
-var collections = ["wLinks"];
+var url = 'mongodb://localhost:27017/wayfair';
 
 // Hook mongojs config to db variable
-var db = connect("localhost:27017/wayfair")
+mongo.connect(url, function (err, db) {
+    if (err) throw err
+    else {
+        console.log("we are in");
+    }
+    var search = db.collection('wLinks').find();
+    search.forEach(function (doc, err) {
+
+        console.log(doc);
+
+    }, function () {
+        db.close();
+    });
+});
+
+
+
+
 
 
 app.listen(8080, function () {
@@ -41,13 +58,13 @@ function Product(id, name, supplier, currentPrice) {
 
 }
 
-db.wLinks.find({}).toArray(function (err, result) {
-    if (err) throw err;
-    resultsArray = result;
-    db.close();
-    console.log(resultsArray[0]);
-    makeRequest();
-});
+// db.wLinks.find({}).toArray(function (err, result) {
+//     if (err) throw err;
+//     resultsArray = result;
+//     db.close();
+//     console.log(resultsArray[0]);
+//     makeRequest();
+// });
 
 
 
@@ -70,7 +87,7 @@ function makeRequest() {
 
             name = $(".ProductDetailInfoBlock-header-title").text();
             supplier = $(".ProductDetailInfoBlock-header-link").text();
-              currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text();
+            currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text();
 
             currentProduct = new Product("15", name, supplier, currentPrice);
 
@@ -95,13 +112,9 @@ function insertToMongo() {
         "Name": "name",
         "Supplier": "sdfsdffff",
         "CurrentPrice": "ddddd"
-       
+
 
     });
     db.close();
     console.log("done inserting into mongo");
 }
-
-
-
-
