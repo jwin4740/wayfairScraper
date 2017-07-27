@@ -11,7 +11,15 @@ var mongo = require("mongodb");
 // Initialize Express
 var app = express();
 
-var url = 'mongodb://localhost:27017/wayfair';
+const url = 'mongodb://localhost:27017/wayfair';
+
+var resultsArray = [];
+function Product(name, supplier, currentPrice) {
+    this.name = name;
+    this.supplier = supplier;
+    this.currentPrice = currentPrice;
+
+}
 
 // Hook mongojs config to db variable
 mongo.connect(url, function (err, db) {
@@ -21,13 +29,60 @@ mongo.connect(url, function (err, db) {
     }
     var search = db.collection('wLinks').find();
     search.forEach(function (doc, err) {
-
-        console.log(doc);
+        resultsArray.push(doc);
+      
 
     }, function () {
         db.close();
+        console.log(resultsArray);
     });
 });
+
+
+
+
+function makeRequest() {
+    var options = {
+        url: resultsArray[0].link,
+        method: 'get',
+        headers: {
+            'User-Agent': 'request'
+        }
+    };
+
+    function callback(error, response, body) {
+        currPage++;
+        if (error) {
+            return;
+        }
+        if (!error && response.statusCode == 200) {
+            var $ = cheerio.load(body);
+            name = $(".ProductDetailInfoBlock-header-title").text();
+            supplier = $(".ProductDetailInfoBlock-header-link").text();
+              currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text();
+
+            currentProduct = new Product("15", name, supplier, currentPrice);
+            console.log(currentProduct);
+            insertToMongo();
+        }
+    }
+    request(options, callback);
+}
+
+function insertToMongo() {
+
+
+    db.wSuppliers.insert({
+        "Name": "name",
+        "Supplier": "sdfsdffff",
+        "CurrentPrice": "ddddd"
+       
+
+    });
+    db.close();
+    console.log("done inserting into mongo");
+}
+
 
 
 
