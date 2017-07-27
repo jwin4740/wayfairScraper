@@ -51,7 +51,7 @@ function makeRequest() {
       });
      
       console.log(resultsArray.length);
-      if (currPage < 31) {
+      if (currPage < 2) {
       setTimeout(makeRequest, 500);
       } else {
         console.log("done requesting");
@@ -68,11 +68,12 @@ function makeRequest() {
 function insertToMongo() {
   var n = resultsArray.length;
   for (var i = 0; i < n; i++) {
-    db.wLinks.insert({
+    db.wSuppliers.insert({
       "link": resultsArray[i]
     });
 
   }
+  db.close();
   console.log("done inserting into mongo");
 }
 
