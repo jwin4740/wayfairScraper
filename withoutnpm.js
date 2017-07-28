@@ -15,11 +15,13 @@ const url = 'mongodb://localhost:27017/wayfair';
 
 var resultsArray = [];
 
-function Product(name, supplier, currentPrice, sku) {
+function Product(name, supplier, currentPrice, sku, colors, sizes) {
     this.name = name;
     this.supplier = supplier;
     this.currentPrice = currentPrice;
     this.sku = sku;
+    this.colors = colors;
+    this.sizes = sizes
 
 }
 
@@ -56,7 +58,7 @@ mongo.connect(url, function (err, db) {
 
     function requestController() {
 
-        if (counter < len) {
+        if (counter < 2) {
             makeRequest(counter);
             counter++;
         } else {
@@ -81,12 +83,21 @@ mongo.connect(url, function (err, db) {
                 return;
             }
             if (!error && response.statusCode == 200) {
+                var colorsArray = [];
+                var sizesArray = [];
                 var $ = cheerio.load(body);
                 name = $(".ProductDetailInfoBlock-header-title").text();
                 supplier = $(".ProductDetailInfoBlock-header-link").text();
                 currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children('span').text();
                 sku = $("span.ProductDetailBreadcrumbs-item--product").text();
-                currentProduct = new Product(name, supplier, currentPrice, sku);
+                $("a.ProductDetailOptions-thumbnail").each(function (i, elem){
+                    colorsArray[i] = $(this).attr("data-name");
+                });
+                   $("select.ProductDetailOptions-select").children().each(function (i, elem){
+                    sizesArray[i] = $(this).attr("data-option-name");
+                });
+                sizesArray.shift();
+                currentProduct = new Product(name, supplier, currentPrice, sku, colorsArray, sizesArray);
                 
 
                 insertToMongo();
