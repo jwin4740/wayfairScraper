@@ -37,20 +37,21 @@ var x = 0;
 var name;
 var supplier;
 var currentPrice;
-var counter = 0;
+var counter = 2599;
 var sku;
 mongo.connect(url, function (err, db) {
     if (err) throw err
     else {
         console.log("we are in");
     }
-    var search = db.collection('wLinks').find();
+    var search = db.collection('allLinks').find();
     search.forEach(function (doc, err) {
         resultsArray.push(doc);
 
 
     }, function () {
         len = resultsArray.length;
+        console.log(len);
         requestController();
 
 
@@ -58,7 +59,7 @@ mongo.connect(url, function (err, db) {
 
     function requestController() {
 
-        if (counter < 2) {
+        if (counter < len) {
             makeRequest(counter);
             counter++;
         } else {
@@ -78,7 +79,7 @@ mongo.connect(url, function (err, db) {
         };
 
         function callback(error, response, body) {
-            currPage++;
+            
             if (error) {
                 return;
             }
@@ -90,15 +91,15 @@ mongo.connect(url, function (err, db) {
                 supplier = $(".ProductDetailInfoBlock-header-link").text();
                 currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children('span').text();
                 sku = $("span.ProductDetailBreadcrumbs-item--product").text();
-                $("a.ProductDetailOptions-thumbnail").each(function (i, elem){
+                $("a.ProductDetailOptions-thumbnail").each(function (i, elem) {
                     colorsArray[i] = $(this).attr("data-name");
                 });
-                   $("select.ProductDetailOptions-select").children().each(function (i, elem){
+                $("select.ProductDetailOptions-select").children().each(function (i, elem) {
                     sizesArray[i] = $(this).attr("data-option-name");
                 });
                 sizesArray.shift();
                 currentProduct = new Product(name, supplier, currentPrice, sku, colorsArray, sizesArray);
-                
+
 
                 insertToMongo();
 
@@ -109,13 +110,19 @@ mongo.connect(url, function (err, db) {
 
     function insertToMongo() {
 
-        db.collection('BasicInfo').insert(currentProduct);
+        if (currentProduct.name != null) {
+
+            db.collection('BasicInfo').insert(currentProduct);
+        }
 
 
         setTimeout(function () {
             requestController();
-            console.log("next");
-        }, 500);
+            if (counter % 5 === 0){
+                console.log(counter + " records inserted");
+            }
+        }, 300);
+
     }
 
 });
