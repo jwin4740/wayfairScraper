@@ -26,6 +26,7 @@
     "cheerio": "^1.0.0-rc.2",
     "cloudscraper": "^1.4.1",
     "express": "^4.15.3",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.30",
     "request": "^2.81.0"
   }
