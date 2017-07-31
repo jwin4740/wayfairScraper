@@ -1,4 +1,8 @@
+var priceParse = require("./pricingFunction.js");
+
+
 module.exports = {
+
 
     // START function that grabs the name of the product
     Name: function ($) {
@@ -20,14 +24,25 @@ module.exports = {
     },
 
     Sizes: function ($) {
-        var sizesArray = [];
 
+        var sizesArray = []; // cheerio results are stored in here
+        var exportedArray = [];
+
+        function SizeConstruct(size, price) {
+            this.Size = size;
+            this.Price = price;
+        }
         $("select.ProductDetailOptions-select").children().each(function (i, elem) {
             var temp = $(this).attr("data-option-name");
             sizesArray.push(temp);
         });
         sizesArray.shift();
-        return sizesArray;
+        sizesArray.forEach(function (element) {
+            var sizeConstruct = new SizeConstruct(element, priceParse.Pricing($));
+            exportedArray.push(sizeConstruct);
+
+        }, this);
+        return exportedArray;
     },
 
     QueryResultLength: function ($) {
@@ -45,48 +60,33 @@ module.exports = {
         });
         return colorsArray;
 
-    },
-
-    Pricing: function ($) {
-
-
-        var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
-        var temp = $(".ProductDetailInfoBlock-pricing-strikethrough.js-listprice").text();
-        var tempStrike = /\d+/.exec(temp);
-        var discountPercentage = $("span.ProductDetailInfoBlock-pricing-discount.ProductDetailInfoBlock-pricing-discount--sale").text().trim();
-        var tempparse = parseInt(tempStrike[0]);
-        var strikeThrough = tempparse.toFixed(2);
-        strikeThrough = '$' + strikeThrough;
-
-     
-        var priceObj = {
-            currentPrice: currentPrice,
-            priceDetails: {
-                strikeThroughPrice: strikeThrough,
-                discountPercentage: discountPercentage
-            }
-
-        }
-
-        return priceObj;
-
     }
 
+    // Pricing: function ($) {
+
+     
+    //         var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
+    //         var temp = $(".ProductDetailInfoBlock-pricing-strikethrough.js-listprice").text();
+    //         var tempStrike = /\d+/.exec(temp);
+    //         var discountPercentage = $("span.ProductDetailInfoBlock-pricing-discount.ProductDetailInfoBlock-pricing-discount--sale").text().trim();
+    //         var tempparse = parseInt(tempStrike[0]);
+    //         var strikeThrough = tempparse.toFixed(2);
+    //         strikeThrough = '$' + strikeThrough;
+
+    //     }
 
 
+    //     var priceObj = {
+    //         currentPrice: currentPrice,
+    //         priceDetails: {
+    //             strikeThroughPrice: strikeThrough,
+    //             discountPercentage: discountPercentage
+    //         }
 
+    //     }
 
+    //     return priceObj;
 
-
-
-
-
-
-
-
-
-
-
-
+    // },
 
 }
