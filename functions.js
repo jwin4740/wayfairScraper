@@ -20,8 +20,8 @@ module.exports = {
     },
 
     Sizes: function ($) {
-          var sizesArray = [];
-      
+        var sizesArray = [];
+
         $("select.ProductDetailOptions-select").children().each(function (i, elem) {
             var temp = $(this).attr("data-option-name");
             sizesArray.push(temp);
@@ -37,7 +37,7 @@ module.exports = {
     },
 
     Colors: function ($) {
-          var colorsArray = [];
+        var colorsArray = [];
         $("a.ProductDetailOptions-thumbnail").each(function (i, elem) {
 
             var temp = $(this).attr("data-name");
@@ -49,7 +49,17 @@ module.exports = {
 
     Pricing: function ($) {
 
-        return priceObj = $(".ProductDetailInfoBlock-pricing").text().trim();
+
+        var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
+
+        var priceDetails = $(".ProductDetailInfoBlock-pricing-discountWrap").children().text().trim();
+        var priceObj = {
+            currentPrice: currentPrice,
+            priceDetails: priceDetails
+
+        }
+
+        return priceObj;
 
     }
 

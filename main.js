@@ -135,7 +135,7 @@ var priceObj;
         }
 
         
-        priceObj.replace('\n', ' ');
+      
         if (colorss.length === 0) {
             colorss = "single color only";
         }
