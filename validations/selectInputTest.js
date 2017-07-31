@@ -10,12 +10,12 @@ var link;
 var name;
 var supplier;
 var currentPrice;
-var counter = 2599;
+var counter = 0;
 var sku;
 var resultsArray = [];
 var colorsArray = [];
 var sizesArray = [];
-var sizess;
+var multipleSizesArray = [];
 
 
 
@@ -27,7 +27,7 @@ var request = require("request");
 var cheerio = require("cheerio");
 var mongo = require("mongodb");
 var app = express();
-var wParse = require("./functions.js")
+// var wParse = require("./functions.js")
 
 // END DEPENDENCIES
 
@@ -59,6 +59,9 @@ function Product(name, supplier, sku, priceObj, colors, sizes, financing, link) 
 app.listen(8080, function () {
     console.log("App running on port 8080!");
 });
+
+
+
 mongo.connect(url, function (err, db) {
     if (err) throw err
     else {
@@ -74,11 +77,11 @@ mongo.connect(url, function (err, db) {
     });
 
     function requestController() {
-        if (counter < len) {
+        if (counter < 20) {
             makeRequest(counter);
             counter++;
         } else {
-            db.close();
+            insertToMongo();
             console.log("closed");
         }
     }
@@ -107,7 +110,7 @@ mongo.connect(url, function (err, db) {
 
 
 
-var priceObj;
+
 
 
 
@@ -119,41 +122,34 @@ var priceObj;
         var $ = cheerio.load(body);
 
 
-        name = wParse.Name($);
-        supplier = wParse.Supplier($);
-        sku = wParse.Sku($);
-        sizess = wParse.Sizes($);
-        colorss = wParse.Colors($);
-        priceObj = wParse.Pricing($);
-        var financing;
-        var financeDiv = $(".ProductDetailCardMarketing").text().trim();
+        $(".ProductDetailOptions-select").children().each(function (i, elem) {
+            sizesArray[i] = $(this).attr("data-option-name");
+        });
+        multipleSizesArray.push(sizesArray);
 
-        if (financeDiv != null) {
-            financing = financeDiv;
-        } else {
-            financing = "none";
-        }
-
-        
-        priceObj.replace('\n', ' ');
-        if (colorss.length === 0) {
-            colorss = "single color only";
-        }
-        currentProduct = new Product(name, supplier, sku, priceObj, colorss, sizess, financing, link);
-        console.log(currentProduct);
-        // if (err) throw err;
-        // insertToMongo();
+        setTimeout(function () {
+            requestController();
+            if (counter % 5 === 0) {
+                console.log(counter + " records searched");
+            }
+        }, 100);
     }
+
+
+
+
+    function insertToMongo() {
+        var n = resultsArray.length;
+        for (var i = 0; i < 20; i++) {
+            db.collection('selectionTest').insert({
+                "link": resultsArray[i],
+                "selects": multipleSizesArray[i]
+
+            });
+
+        }
+        db.close();
+        console.log("done inserting into mongo");
+    }
+
 });
-
-function insertToMongo() {
-    if (currentProduct.name != null) {
-        db.collection('BasicInfo').insert(currentProduct);
-    }
-    setTimeout(function () {
-        requestController();
-        if (counter % 5 === 0) {
-            console.log(counter + " records inserted");
-        }
-    }, 300);
-}
