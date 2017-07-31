@@ -52,10 +52,15 @@ module.exports = {
 
         var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
 
-        var priceDetails = $(".ProductDetailInfoBlock-pricing-discountWrap").children().text().trim();
+        var strikeThrough = $(".ProductDetailInfoBlock-pricing-strikethrough.js-listprice").text();
+   
+        var discountPercentage = "";
         var priceObj = {
             currentPrice: currentPrice,
-            priceDetails: priceDetails
+            priceDetails: {
+                strikeThrough: strikeThrough,
+                discountPercentage: discountPercentage
+            }
 
         }
 
