@@ -51,14 +51,18 @@ module.exports = {
 
 
         var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
+        var temp = $(".ProductDetailInfoBlock-pricing-strikethrough.js-listprice").text();
+        var tempStrike = /\d+/.exec(temp);
+        var discountPercentage = $("span.ProductDetailInfoBlock-pricing-discount.ProductDetailInfoBlock-pricing-discount--sale").text().trim();
+        var tempparse = parseInt(tempStrike[0]);
+        var strikeThrough = tempparse.toFixed(2);
+        strikeThrough = '$' + strikeThrough;
 
-        var strikeThrough = $(".ProductDetailInfoBlock-pricing-strikethrough.js-listprice").text();
-   
-        var discountPercentage = "";
+     
         var priceObj = {
             currentPrice: currentPrice,
             priceDetails: {
-                strikeThrough: strikeThrough,
+                strikeThroughPrice: strikeThrough,
                 discountPercentage: discountPercentage
             }
 

@@ -125,6 +125,8 @@ var priceObj;
         sizess = wParse.Sizes($);
         colorss = wParse.Colors($);
         priceObj = wParse.Pricing($);
+     
+       
         var financing;
         var financeDiv = $(".ProductDetailCardMarketing").text().trim();
 
