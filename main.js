@@ -85,7 +85,7 @@ mongo.connect(url, function (err, db) {
     }
 
     function makeRequest(counter) {
-        link = 'https://www.wayfair.com/Red-Barrel-Studio-Biggsville-1200-Thread-Count-Cotton-Sheet-Set-RDBL1806.html';
+        link = resultsArray[counter].link;
         var options = {
             url: link,
             method: 'get',
@@ -108,7 +108,7 @@ mongo.connect(url, function (err, db) {
 
 
 
-    var priceObj;
+    var priceObj = "";
 
 
 
@@ -121,16 +121,35 @@ mongo.connect(url, function (err, db) {
         sizesArray = [];
 
 
-    //  var test = $('input[name="pdp[option_price]"]');
-    //  console.log(test);
-  
 
 
         name = wParse.Name($);
         supplier = wParse.Supplier($);
         sku = wParse.Sku($);
         sizess = wParse.PricingAndSizes($);
+
         colorss = wParse.Colors($);
+
+
+
+
+       
+        // var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
+        // $("select.ProductDetailOptions-select").children().each(function (i, elem) {
+        //     var temp = $(this).text().trim();
+        //     if (temp != "Select Size") {
+        //         sizesArray.push(temp);
+        //     }
+
+        // });
+        // console.log(sizesArray);
+
+
+
+
+
+
+
 
         var financing = "N/A";
         if (colorss.length === 0) {
@@ -148,7 +167,7 @@ mongo.connect(url, function (err, db) {
 
         db.collection('sizeObject').insert(currentProduct);
 
-        console.log("done");
+        // console.log("done");
         // setTimeout(function () {
         //     requestController();
         //     if (counter % 5 === 0) {
