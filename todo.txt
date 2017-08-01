@@ -1,2 +1,5 @@
 - FIGURE OUT SERENO
 - free shipping info
+- stock
+- for each size get correct pricing
+    - find select element and get respective price object

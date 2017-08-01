@@ -115,25 +115,24 @@ mongo.connect(url, function (err, db) {
     /*------------- Function Definitions -----------------------------*/
 
     function cheerioGo(body) {
+        var $ = cheerio.load(body);
+
         colorsArray = [];
         sizesArray = [];
-        var $ = cheerio.load(body);
+
+
+    //  var test = $('input[name="pdp[option_price]"]');
+    //  console.log(test);
+  
 
 
         name = wParse.Name($);
         supplier = wParse.Supplier($);
         sku = wParse.Sku($);
-        sizess = wParse.Sizes($);
+        sizess = wParse.PricingAndSizes($);
         colorss = wParse.Colors($);
-        // priceObj = wParse.Pricing($);
-        priceObj = "";
-
 
         var financing = "N/A";
-
-
-
-
         if (colorss.length === 0) {
             colorss = "single color only";
         }
@@ -146,9 +145,9 @@ mongo.connect(url, function (err, db) {
 
 
     function insertToMongo() {
-        
-            db.collection('sizeObject').insert(currentProduct);
-      
+
+        db.collection('sizeObject').insert(currentProduct);
+
         console.log("done");
         // setTimeout(function () {
         //     requestController();
