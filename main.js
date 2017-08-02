@@ -15,7 +15,8 @@ var sku;
 var resultsArray = [];
 var colorsArray = [];
 var sizesArray = [];
-var sizess;
+var colors;
+var sizes;
 const site = "Wayfair";
 
 
@@ -39,7 +40,7 @@ var wParse = require("./functions.js")
 
 
 
-function Product(site, name, supplier, sku, priceObj, colors, sizes, financing, link) {
+function Product(site, name, supplier, sku, priceObj, colors, sizes, link) {
     this.Site = site;
     this.Name = name;
     this.Supplier = supplier;
@@ -47,7 +48,6 @@ function Product(site, name, supplier, sku, priceObj, colors, sizes, financing, 
     this.Pricing = priceObj;
     this.Colors = colors;
     this.Sizes = sizes;
-    this.Financing = financing;
     this.Link = link;
     this.SearchDate = moment().format('MMMM Do YYYY');
 }
@@ -125,19 +125,18 @@ mongo.connect(url, function (err, db) {
         sizesArray = [];
 
 
-
-
+     
         name = wParse.Name($);
         supplier = wParse.Supplier($);
         sku = wParse.Sku($);
         sizess = wParse.PricingAndSizes($);
 
-        colorss = wParse.Colors($);
-  var regex = /\d{1,5}\.\d{0,2}/;  
+        colors = wParse.Colors($);
+        var regex = /\d{1,5}\.\d{0,2}/;
 
 
 
-       
+
         // var currentPrice = $(".ProductDetailInfoBlock-pricing-amount").children().text().trim();
         // $("select.ProductDetailOptions-select").children().each(function (i, elem) {
         //     var temp = $(this).text().trim();
@@ -155,11 +154,10 @@ mongo.connect(url, function (err, db) {
 
 
 
-        var financing = "N/A";
-        if (colorss.length === 0) {
-            colorss = "single color only";
+        if (colors.length === 0) {
+            colors = "single color only";
         }
-        currentProduct = new Product(site, name, supplier, sku, priceObj, colorss, sizess, financing, link);
+        currentProduct = new Product(site, name, supplier, sku, priceObj, colors, sizess, link);
         console.log(currentProduct);
         // if (err) throw err;
         insertToMongo();
