@@ -12,4 +12,4 @@ module.exports = {
     }
 }
 
-  var regex = /\d{1,5}\.\d{0,2}/;
+     

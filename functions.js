@@ -1,25 +1,32 @@
 var priceParse = require("./pricingFunction.js");
 
 
+// sheet elements
+
+const nameElement = "#product-page-title";
+const supplierElement = "a.ProductDetailInfoBlock-header-manuLink";
+const priceElement = "span#sale_price";
+const skuColorSizeOptionElement = "select.js-select-category.ProductDetail-select-category";
+
 module.exports = {
 
 
     // START function that grabs the name of the product
     Name: function ($) {
-        return $(".ProductDetailInfoBlock-header-title").text();
+        return $(nameElement).text().trim();
     },
     // END function that grabs name of product
 
 
     // START function that grabs the supplier of the product
     Supplier: function ($) {
-        return $(".ProductDetailInfoBlock-header-link").text().trim();
+        return $(supplierElement).text().trim();
     },
     // END function that grabs supplier of product
 
     Sku: function ($) {
-        var rawSku = $("span.ProductDetailBreadcrumbs-item--product").text().trim();
-        return rawSku.replace(/SKU: /, "");
+        var sku = $(skuColorSizeOptionElement).attr("data-sku");
+        return sku;
 
     },
 
@@ -36,7 +43,7 @@ module.exports = {
         $("select.ProductDetailOptions-select").children().each(function (i, elem) {
             var temp = $(this).text().trim();
             if (temp != "Select Size") {
-                sizesArray.push(temp);
+                sizesArray.push(temp)
             }
       
         });

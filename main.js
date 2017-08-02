@@ -16,6 +16,9 @@ var resultsArray = [];
 var colorsArray = [];
 var sizesArray = [];
 var sizess;
+const site = "Wayfair";
+
+
 
 
 
@@ -36,7 +39,8 @@ var wParse = require("./functions.js")
 
 
 
-function Product(name, supplier, sku, priceObj, colors, sizes, financing, link) {
+function Product(site, name, supplier, sku, priceObj, colors, sizes, financing, link) {
+    this.Site = site;
     this.Name = name;
     this.Supplier = supplier;
     this.SKU = sku;
@@ -129,7 +133,7 @@ mongo.connect(url, function (err, db) {
         sizess = wParse.PricingAndSizes($);
 
         colorss = wParse.Colors($);
-
+  var regex = /\d{1,5}\.\d{0,2}/;  
 
 
 
@@ -155,7 +159,7 @@ mongo.connect(url, function (err, db) {
         if (colorss.length === 0) {
             colorss = "single color only";
         }
-        currentProduct = new Product(name, supplier, sku, priceObj, colorss, sizess, financing, link);
+        currentProduct = new Product(site, name, supplier, sku, priceObj, colorss, sizess, financing, link);
         console.log(currentProduct);
         // if (err) throw err;
         insertToMongo();
